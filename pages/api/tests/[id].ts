@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       return res.status(200).json(test);
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Error fetching test result' });
     }
   }
@@ -64,12 +64,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // DELETE: Delete a test result by its ID
   else if (req.method === 'DELETE') {
     try {
-      const deletedTest = await prisma.diagnosticTest.delete({
+      await prisma.diagnosticTest.delete({
         where: { id: String(id) },
       });
 
       return res.status(200).json({ message: 'Test result deleted successfully' });
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Error deleting test result' });
     }
   }

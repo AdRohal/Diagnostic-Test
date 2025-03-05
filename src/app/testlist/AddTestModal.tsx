@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from 'react';
-
 interface AddTestModalProps {
   isOpen: boolean;
   closeModal: () => void;
@@ -23,7 +21,7 @@ const AddTestModal = ({
   newTest
 }: AddTestModalProps) => {
 
-  if (!isOpen) return null; // Do not render the modal if it's not open
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">

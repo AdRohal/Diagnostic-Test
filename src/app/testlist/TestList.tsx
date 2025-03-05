@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import AddTestModal from './AddTestModal'; // Import the modal component
-import EditTestModal from './EditTestModal'; // Import the edit modal component
+import AddTestModal from './AddTestModal';
+import EditTestModal from './EditTestModal';
 
 type Test = {
   id: number;
@@ -17,7 +17,7 @@ export default function TestList() {
   const [tests, setTests] = useState<Test[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [testToEdit, setTestToEdit] = useState<Test | null>(null); // New state for the test being edited
+  const [testToEdit, setTestToEdit] = useState<Test | null>(null);
   const [newTest, setNewTest] = useState({
     patientName: '',
     testType: '',
@@ -25,7 +25,7 @@ export default function TestList() {
     notes: ''
   });
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
-  const [testToDelete, setTestToDelete] = useState<Test | null>(null); // Test to be deleted
+  const [testToDelete, setTestToDelete] = useState<Test | null>(null);
 
   // Fetch tests from the backend
   useEffect(() => {
@@ -71,8 +71,8 @@ export default function TestList() {
 
       if (response.ok) {
         const newTestData = await response.json();
-        setTests((prev) => [...prev, newTestData]); // Add the new test to the list
-        setIsModalOpen(false); // Close the modal after submission
+        setTests((prev) => [...prev, newTestData]);
+        setIsModalOpen(false);
       } else {
         console.error('Error adding test');
       }
@@ -102,7 +102,7 @@ export default function TestList() {
             test.id === updatedTest.id ? updatedTest : test
           )
         );
-        setIsEditModalOpen(false); // Close the edit modal
+        setIsEditModalOpen(false);
       } else {
         console.error('Error updating test');
       }
@@ -134,7 +134,7 @@ export default function TestList() {
 
       if (response.ok) {
         setTests((prev) => prev.filter((test) => test.id !== testToDelete.id));
-        setIsDeleteConfirmationOpen(false); // Close the confirmation modal
+        setIsDeleteConfirmationOpen(false);
       } else {
         console.error('Error deleting test');
       }
@@ -207,13 +207,15 @@ export default function TestList() {
       />
 
       {/* Edit Test Modal */}
-      <EditTestModal
-        isOpen={isEditModalOpen}
-        closeModal={() => setIsEditModalOpen(false)}
-        handleSubmit={handleEditSubmit}
-        handleInputChange={handleInputChange}
-        testToEdit={testToEdit || {}}
-      />
+      {testToEdit && (
+        <EditTestModal
+          isOpen={isEditModalOpen}
+          closeModal={() => setIsEditModalOpen(false)}
+          handleSubmit={handleEditSubmit}
+          handleInputChange={handleInputChange}
+          testToEdit={testToEdit}
+        />
+      )}
 
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmationOpen && (

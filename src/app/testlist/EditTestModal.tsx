@@ -1,13 +1,18 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 type EditTestModalProps = {
   isOpen: boolean;
   closeModal: () => void;
   handleSubmit: (e: React.FormEvent) => void;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  testToEdit: any; // Add the test data to edit
+  testToEdit: {
+    patientName: string;
+    testType: string;
+    result: string;
+    notes: string;
+  };
 };
 
 export default function EditTestModal({

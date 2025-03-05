@@ -1,7 +1,6 @@
-// src/app/page.tsx
-"use client"; // Ensure this is at the top
+"use client";
 
-import TestList from './testlist/TestList'; // Correct default import
+import TestList from './testlist/TestList';
 
 export default function HomePage() {
   return (

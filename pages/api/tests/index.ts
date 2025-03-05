@@ -1,5 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
+import { z } from 'zod';
+
+// Define the schema for validation
+const testSchema = z.object({
+  patientName: z.string(),
+  testType: z.string(),
+  result: z.string(),
+  testDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Invalid date format",
+  }),
+  notes: z.string().optional(),
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Handle GET request to list all test results
@@ -7,34 +19,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const tests = await prisma.diagnosticTest.findMany();
       return res.status(200).json(tests);
-    } catch (error) {
+    } catch {
       return res.status(500).json({ error: 'Error fetching test results' });
     }
   }
 
   // Handle POST request to create a new test result
   else if (req.method === 'POST') {
-    const { patientName, testType, result, testDate, notes } = req.body;
-
-    // Validate required fields
-    if (!patientName || !testType || !result || !testDate) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
     try {
+      // Validate the request body
+      const validatedData = testSchema.parse(req.body);
+
       // Create a new test result in the database
       const newTest = await prisma.diagnosticTest.create({
         data: {
-          patientName,
-          testType,
-          result,
-          testDate: new Date(testDate), // Ensure the date is properly formatted
-          notes: notes || '', // Optional notes field
+          ...validatedData,
+          testDate: new Date(validatedData.testDate),
         },
       });
 
-      return res.status(201).json(newTest); // Return the created test result
+      return res.status(201).json(newTest);
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
       return res.status(500).json({ error: 'Error creating test result' });
     }
   }
